@@ -1,15 +1,40 @@
-# Zephyr Training Environment
+# Iomico Zephyr Course Training Environment
 
-Welcome to the Zephyr RTOS training! This repository includes a ready-to-use
-development environment based on Zephyr 4.3.0, which you can set up in one of
-three ways:
+This repository includes Iomico's ready-to-use
+development environment based on Zephyr 4.4.2 for their Zephyr training course, modified by Colin Clark to use nix and direnv.
 
----
+## Requirements
 
-## Manual Zephyr Setup
+- [Nix](https://nixos.org/download) with flakes enabled
+- [direnv](https://direnv.net)
 
-Follow the following guide:
-- [Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#).
+## Setup Zephyr with Nix
 
-Make sure to select appropriate OS and to perform all steps till
-[Build the Blinky Sample](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#build-the-blinky-sample).
+### 1. Clone the repository
+
+The repository must live inside a parent directory that will become the Zephyr workspace:
+
+```console
+mkdir -p zephyr-course-workspace
+cd zephyr-course-workspace
+git clone https://github.com/colinbdclark/zephyr-course.git
+cd zephyr-course
+```
+
+### 2. Activate the Devshell
+
+To start the nix devshell, run `nix develop` in the repository's directory. Or use `direnv allow` to automatically start the dev shell whenever you enter the repository's directory.
+
+### 3. Initialize the Zephyr Workspace
+
+```console
+west init -l .
+west update
+direnv reload
+```
+
+### 4. Build the app:
+
+```console
+west build -p always -b <your_board> app
+```
