@@ -1,0 +1,80 @@
+# Assignment
+#
+# Menu Structure:
+# [*] LED Subsystem --->
+#     LED blink sleep time (1s (medium)) --->
+#     [ ] Advanced LED settings --->
+#         (100) LED brightness percentage
+#         (500) LED fade duration (ms)
+#         Expert Settings --->
+#             [ ] Enable LED debugging
+#             [ ] Custom blink pattern
+#
+# Requirements:
+# 1. use menuconfig for LED_SUBSYSTEM (top-level toggle)
+# 2 choice for BLINK_SLEEP_TIME (250, 500, 1000, 2000) with hidden int symbol
+# 3. menuconfig for Advanced LED settings
+# 4. menu with visible if for Expert Settings
+# 5. range for brightness (0-100) and fade (0-5000)
+
+menuconfig LED_SUBSYSTEM
+    bool "LED Subsystem"
+    help
+        Enable the LED subsystem.
+
+    if LED_SUBSYSTEM
+        choice
+            prompt "LED blink speed"
+            default BLINK_SLEEP_1000MS
+            help
+                The sleep time delay in milliseconds.
+
+            config BLINK_SLEEP_250MS
+                bool "Fast"
+            config BLINK_SLEEP_500MS
+                bool "Moderate"
+            config BLINK_SLEEP_1000MS
+                bool "Medium"
+            config BLINK_SLEEP_2000MS
+                bool "Slow"
+        endchoice
+
+        menuconfig LED_ADVANCED_SETTINGS
+            bool "Advanced LED settings"
+
+            if LED_ADVANCED_SETTINGS
+                config LED_BRIGHTNESS
+                    int "LED brightness percentage"
+                    range 0 100
+                    default 100
+
+                config LED_FADE_DURATION_MS
+                    int "LED fade duration in milliseconds"
+                    range 0 5000
+                    default 500
+
+                menu "Expert LED Settings"
+                    # This is semantically meaningless.
+                    # We've already created a dependency on LED_ADVANCED_SETTINGS by being nested in if.
+                    # The alternative is to make Expert LED settings a peer of Advanced Settings by moving this out if the if.
+                    # The assignment requirements are unclear, so this matches the specified visual layout more closely.
+                    visible if LED_ADVANCED_SETTINGS
+
+                    config LED_ENABLE_DEBUGGING
+                        bool "Enable LED Debugging"
+
+                    config LED_CUSTOM_BLINK_PATTERN
+                        bool "Custom blink pattern"
+                endmenu
+            endif
+    endif
+
+config BLINK_SLEEP_TIME_MS
+    int
+    default 250 if BLINK_SLEEP_250MS
+    default 500 if BLINK_SLEEP_500MS
+    default 1000 if BLINK_SLEEP_1000MS
+    default 2000 if BLINK_SLEEP_2000MS
+    default 1000
+
+source "Kconfig.zephyr"
