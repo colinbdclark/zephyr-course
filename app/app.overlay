@@ -1,0 +1,11 @@
+// Assignment:
+// Add an app-led alias pointing to your board's LED0
+// In main.cpp, use DT_ALIAS(app_led) for the GPIO and CONFIG_APP_HEARTBEAT_PERIOD_MS for the sleep duration
+// Verify: open menuconfig, change the period, rebuild. LED blink speed must change
+// Use tag l4-task1
+
+/ {
+    aliases {
+        app-led = &red_led;
+    };
+};
